@@ -27,12 +27,17 @@ router.get("/", async (req, res) => {
   res.send(data);
 });
 
-router.post("/add", (req, res) => {
-  const newTask2 = new Tasks({
-    challenge: req.body.challenge,
-    isDone: req.body.isDone,
-  });
-  newTask2.save();
+router.post("/add", async (req, res) => {
+  try {
+    const newTask2 = await new Tasks({
+      challenge: req.body.challenge,
+      isDone: req.body.isDone,
+    });
+    await newTask2.save();
+    res.status(200).send({ status: 200, message: "" });
+  } catch (err) {
+    res.status(500).send({ status: 500, message: err });
+  }
 });
 
 router.delete("/challenge/:id", async (req, res) => {
@@ -67,6 +72,7 @@ router.put("/update/:id", async (req, res) => {
     if (!task) {
       return res.status(404).send({ error: "task not found" });
     }
+    res.status(200).send({ status: 200, message: "" });
   } catch (err) {
     console.log(err);
     res.status(500).send({ error: "Server error" });

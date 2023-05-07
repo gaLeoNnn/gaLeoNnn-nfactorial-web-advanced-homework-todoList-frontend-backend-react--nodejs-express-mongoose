@@ -7,21 +7,24 @@ function App() {
   const [todo, setTodo] = useState([]);
 
   useEffect(() => {
-    let data = axios.get("http://localhost:8080/");
-    data.then((res) => setTodo(res.data));
-  }, [todo]);
+    getData();
+  }, []);
 
   let input = React.createRef();
 
+  const getData = () => {
+    axios.get("http://localhost:8080/").then((res) => setTodo(res.data));
+  };
+
   const postData = () => {
-    let post = axios
+    axios
       .post("http://localhost:8080/add", {
         id: null,
         challenge: input.current.value,
         isDone: 0,
       })
       .then((res) => {
-        console.log(res);
+        getData();
       })
       .catch((error) => {
         console.error("Error:", error);
@@ -43,14 +46,7 @@ function App() {
         challenge: text,
       })
       .then(() => {
-        setTodo(
-          todo.map((item) => {
-            if (item._id === id) {
-              item.challenge = text;
-            }
-            return item;
-          })
-        );
+        getData();
       });
   };
 
